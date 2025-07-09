@@ -1,0 +1,11 @@
+{
+  "name": "daythree",
+  "version": "1.0.0",
+  "main": "dayThree.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
