@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+<button onclick="sendPost()">Send POST</button>
+<button onclick="getInfo()">Get Info</button>
+<h1 id="info"></h1>
+
+<script>
+function sendPost() {
+    fetch('http://localhost:3000/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: "Kraneel", age: 21 })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        document.getElementById('info').innerHTML = JSON.stringify(data);
+    })
+    .catch(err => console.error(err));
+}
+
+// function getInfo() {
+//     fetch('http://localhost:3000/show')
+//     .then(res => res.text())
+//     .then(data => {
+//         console.log(data);
+//         document.getElementById('info').innerHTML = data;
+//     })
+//     .catch(err => console.error(err));
+// }
+</script>
+</body>
+</html>
