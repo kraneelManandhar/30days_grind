@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/daySix')
 .catch((err)=> console.log("error"))
 
 
-app.post('/',async (req,res) => {
+app.post('/add',async (req,res) => {
     try{
         const userData = req.body;
         const newUser = new User(userData);
@@ -50,7 +50,9 @@ app.get('/',async (req,res) => {
 app.delete('/user/:name',async (req,res) => {
     try{
         const nameToDelete = req.params.name;
-        const users = await User.find({user_name : nameToDelete});
+        // const users = await User.find({user_name : nameToDelete});
+        const users = await User.deleteOne({ user_name: nameToDelete });
+
 
         if (users.length === 0){
             res.send("User not found.");
@@ -64,12 +66,7 @@ app.delete('/user/:name',async (req,res) => {
 app.get('/user/:user_id',async (req,res) => {
     try{
         const idToDelete = req.params.user_id;
-        const users = await User.find({user_name : idToDelete});
-
-        // if (users.length === 0){
-        //     res.send("User not found.");
-        // }
-
+        const users = await User.find({user_id : idToDelete});
         res.send(users);
     }catch (error){
         res.send(error)
