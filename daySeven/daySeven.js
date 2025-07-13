@@ -45,7 +45,8 @@ res.send("Error fetching data")
 app.delete('/:id',async (req,res) => {
     try{
         const userToDelete = req.params.id;
-        const UserDel = await User.deleteOne(userToDelete);
+        const UserDel = await User.deleteOne({ "id" : userToDelete});
+        res.send("User deleted.")
     }catch{
         res.send("Couldn't Delete the user.")
     }
