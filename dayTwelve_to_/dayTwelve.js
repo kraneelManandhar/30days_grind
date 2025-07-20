@@ -11,8 +11,15 @@ mongoose.connect('mongodb://localhost:27017/taskTracker')
 .then(()=> console.log("Connected to database"))
 .catch(()=>console.log("Error connecting to database"))
 
-app.get('/',(req,res) => {
-    res.send("App is running.")
+//To show user app is running
+// app.use('/',(req,res) => {
+//     res.send("App is running.")
+// })
+
+app.get('/tasks',async (req,res) => {
+    const tasks = await schema.find();
+    console.log(tasks);
+    res.send(tasks);
 })
 
 app.post('/post',(req,res) => {
@@ -25,6 +32,7 @@ app.post('/post',(req,res) => {
         res.send("Error saving tasks")
     }
 })
+
 
 app.listen(port,() => {
     console.log("Go to http://localhost:5000");
