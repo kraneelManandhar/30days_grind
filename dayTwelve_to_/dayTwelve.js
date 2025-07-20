@@ -7,6 +7,10 @@ const  schema = require('./Schema');
 
 app.use(express.json());
 
+
+const smth = require('./Routes/smth');
+app.use('/smth',smth)
+
 mongoose.connect('mongodb://localhost:27017/taskTracker')
 .then(()=> console.log("Connected to database"))
 .catch(()=>console.log("Error connecting to database"))
