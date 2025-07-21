@@ -26,7 +26,6 @@ app.get('/auth/google',
     passport.authenticate('google', { scope: ['email', 'profile'] })
 );
 
-// ✅ FIX: use middleware properly
 app.get('/auth/google/callback',
     passport.authenticate('google', {
         successRedirect: '/protected',
