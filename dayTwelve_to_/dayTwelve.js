@@ -3,22 +3,19 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port = 5000;
-const  schema = require('./Schema');
+const  schema = require('./models/Schema');
+
 
 app.use(express.json());
 
 
 const smth = require('./Routes/smth');
-app.use('/smth',smth)
+
+app.use('/smth',smth);
 
 mongoose.connect('mongodb://localhost:27017/taskTracker')
 .then(()=> console.log("Connected to database"))
 .catch(()=>console.log("Error connecting to database"))
-
-//To show user app is running
-// app.use('/',(req,res) => {
-//     res.send("App is running.")
-// })
 
 app.get('/tasks',async (req,res) => {
     const tasks = await schema.find();
