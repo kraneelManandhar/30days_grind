@@ -30,8 +30,19 @@ router.post('/',async (req,res)=>{
 })
 
 
-router.patch('/:id',getUserById,(req,res)=> {
-    res.send(res.user)
+router.patch('/:id',getUserById,async (req,res)=> {
+    if (req.body.name != null) {
+        res.user.name = req.body.name
+    }
+    if (req.body.task != null){
+        res.user.task = req.body.task
+    }
+    try{
+        const updatedtask = await res.user.save();
+        res.json(updatedtask);
+    }catch(error){
+        res.json({message : error})
+    }
 })
 
 
