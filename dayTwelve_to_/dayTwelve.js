@@ -8,51 +8,63 @@ const  schema = require('./models/Schema');
 
 app.use(express.json());
 
+// const smth = require('./Routes/smth');
 
-const jwt_test = require('./jwt');
-app.use('/jwt',jwt_test);
+// app.use('/smth',smth);
 
-const smth = require('./Routes/smth');
-
-app.use('/smth',smth);
 
 
 mongoose.connect('mongodb://localhost:27017/taskTracker')
 .then(()=> console.log("Connected to database"))
 .catch(()=>console.log("Error connecting to database"))
 
+app.post('/login',async(req,res) =>{
+    const {name} = req.body;
 
-app.get('/posts',(req,res) => {
-    res.json(req.body)
-    console.log(req.body);
-})
+    if (!name) {
+        return res.status(400).json({ message: "Name is required" });
+    }
 
-app.get('/login',(req,res) =>{
+    try{
+    const user = await UserActivation.findOne({name: name});
 
-    const username = req.body.name;
-    
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const token = jwt.sign({name : username,id: user_id},process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 
-    jwt.sign({name : username}, process.env.ACCESS_TOKEN_SECRET)
-})
+    res.json({accesstoken : token})
+    console.log(token);
 
+    }catch(error){
+        res.json({message:error})
+    }
+});
 
-// app.get('/tasks',async (req,res) => {
-//     const tasks = await schema.find();
-//     console.log(tasks);
-//     res.send(tasks);
-// })
+app.get('/posts', authenticate, async (req, res) => {
+    try {
+        const posts = await User.find({ name: req.user.name});
+        res.json(posts);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
-// app.post('/post',(req,res) => {
-//     try{
-//     const data = req.body;
-//     const Userdata = new schema(data);
-//     Userdata.save();
-//     res.send("Task saved successfully")
-//     }catch(error){
-//         res.send("Error saving tasks")
-//     }
-// })
+function authenticate(req,res,next){
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
+    if (!token){
+        return res.send("Unauthorized");
+    }
+
+    jwt.verify(token ,process.env.ACCESS_TOKEN_SECRET,(err,user) => {
+        if (err){
+            return res.send("Invalid Token.")
+        }
+
+        req.user = user;
+        next();
+    })
+}
 
 app.listen(port,() => {
     console.log("Go to http://localhost:5000");
