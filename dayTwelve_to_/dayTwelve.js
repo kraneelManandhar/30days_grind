@@ -1,71 +1,71 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+const express = require("express");
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const app = express();
 const port = 5000;
-const  schema = require('./models/Schema');
-
+const schema = require("./models/Schema");
+require("dotenv").config();
 
 app.use(express.json());
 
-// const smth = require('./Routes/smth');
+mongoose
+  .connect("mongodb://localhost:27017/taskTracker")
+  .then(() => console.log("Connected to database"))
+  .catch(() => console.log("Error connecting to database"));
 
-// app.use('/smth',smth);
+app.post("/login", async (req, res) => {
+  const { name } = req.body;
+  const { id } = req.query;
 
+  if (!name) {
+    return res.status(400).json({ message: "Name is required" });
+  }
 
+  try {
+    const user = await schema.findOne({ name: name });
 
-mongoose.connect('mongodb://localhost:27017/taskTracker')
-.then(()=> console.log("Connected to database"))
-.catch(()=>console.log("Error connecting to database"))
-
-app.post('/login',async(req,res) =>{
-    const {name} = req.body;
-
-    if (!name) {
-        return res.status(400).json({ message: "Name is required" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    console.log("g");
+    const token = jwt.sign({ name: name }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "1h",
+    });
 
-    try{
-    const user = await UserActivation.findOne({name: name});
-
-    if (!user) return res.status(404).json({ message: "User not found" });
-    const token = jwt.sign({name : username,id: user_id},process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-
-    res.json({accesstoken : token})
+    res.json({ accesstoken: token });
     console.log(token);
-
-    }catch(error){
-        res.json({message:error})
-    }
+  } catch (error) {
+    res.json({ message: error });
+  }
 });
 
-app.get('/posts', authenticate, async (req, res) => {
-    try {
-        const posts = await User.find({ name: req.user.name});
-        res.json(posts);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+app.get("/posts", authenticate, async (req, res) => {
+  try {
+    const posts = await schema.find({ name: req.user.name });
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-function authenticate(req,res,next){
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+function authenticate(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-    if (!token){
-        return res.send("Unauthorized");
+  if (!token) {
+    return res.send("Unauthorized");
+  }
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      return res.send("Invalid Token.");
     }
 
-    jwt.verify(token ,process.env.ACCESS_TOKEN_SECRET,(err,user) => {
-        if (err){
-            return res.send("Invalid Token.")
-        }
-
-        req.user = user;
-        next();
-    })
+    req.user = user;
+    next();
+  });
 }
 
-app.listen(port,() => {
-    console.log("Go to http://localhost:5000");
+app.listen(port, () => {
+  console.log("Go to http://localhost:5000");
 });
