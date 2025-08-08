@@ -41,3 +41,13 @@ exports.updateExpenses = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+exports.findAllcost = async(req,res) => {
+    try{
+        const Allcosts = await req.Expenses.amount;
+        console.log(Allcosts);
+        res.send(`The amounts are ${Allcosts}`)
+    }catch(error){
+        res.send(error);
+    }
+}
