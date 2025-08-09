@@ -6,6 +6,6 @@ router.get('/',expensesController.getExpenses);
 router.get('/:id',expensesController.getExpenseById);
 router.post('/',expensesController.createExpense);
 router.put('/:id',expensesController.updateExpenses);
-router.get('/cost',expensesController.findAllcost);
+router.get('/get/cost',expensesController.findAllcost);
 
 module.exports = router;

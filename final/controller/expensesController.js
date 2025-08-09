@@ -42,12 +42,12 @@ exports.updateExpenses = async (req, res) => {
     }
 };
 
-exports.findAllcost = async(req,res) => {
-    try{
-        const Allcosts = await req.Expenses.amount;
-        console.log(Allcosts);
-        res.send(`The amounts are ${Allcosts}`)
-    }catch(error){
-        res.send(error);
+exports.findAllcost = async (req, res) => {
+    try { 
+        const allCosts = await req.Expenses.find({}, 'amount -_id');
+        const amountsArray = allCosts.map(item => item.amount);
+        res.json({ amounts: amountsArray });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-}
+};
