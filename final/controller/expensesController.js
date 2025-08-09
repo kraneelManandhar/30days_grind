@@ -1,6 +1,10 @@
+const mongoose = require('mongoose');
+expenseDB = mongoose.createConnection(process.env.MONGODB)
+const Expenses = require('../model/expensesSchema')(expenseDB);
+
 exports.createExpense = async (req, res) => {
     try {
-        const expense = new req.Expenses(req.body);
+        const expense = new Expenses(req.body);
         const savedExpense = await expense.save();
         res.status(201).json(savedExpense);
     } catch (error) {
@@ -10,7 +14,7 @@ exports.createExpense = async (req, res) => {
 
 exports.getExpenseById = async (req, res) => {
     try {
-        const expense = await req.Expenses.findById(req.params.id);
+        const expense = await Expenses.findById(req.params.id);
         if (!expense) return res.status(404).json({ message: 'Expense not found' });
         res.json(expense);
     } catch (error) {
@@ -20,7 +24,7 @@ exports.getExpenseById = async (req, res) => {
 
 exports.getExpenses = async (req, res) => {
     try {
-        const expenses = await req.Expenses.find().sort({ date: -1 });
+        const expenses = await Expenses.find().sort({ date: -1 });
         res.json(expenses);
         console.log(req.Expenses);
     } catch (error) {
@@ -30,7 +34,7 @@ exports.getExpenses = async (req, res) => {
 
 exports.updateExpenses = async (req, res) => {
     try {
-        const updatedExpense = await req.Expenses.findByIdAndUpdate(
+        const updatedExpense = await Expenses.findByIdAndUpdate(
             req.params.id,
             req.body,
             { new: true } // Return updated document
@@ -44,7 +48,7 @@ exports.updateExpenses = async (req, res) => {
 
 exports.findAllcost = async (req, res) => {
     try { 
-        const allCosts = await req.Expenses.find({}, 'amount -_id');
+        const allCosts = await Expenses.find({}, 'amount -_id');
         const amountsArray = allCosts.map(item => item.amount);
         res.json({ amounts: amountsArray });
     } catch (error) {
