@@ -11,3 +11,11 @@ exports.findAllcost = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.sumAllCosts = async(req,res) => {
+    try{
+        res.send(allCosts);
+    }catch(error){
+        res.send(error);
+    }
+}

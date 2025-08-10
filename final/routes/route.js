@@ -7,5 +7,6 @@ router.get('/:id',generalController.getExpenseById);
 router.post('/',generalController.createExpense);
 router.put('/:id',generalController.updateExpenses);
 router.get('/get/cost',expensesController.findAllcost);
+router.get('/get/cost/all',expensesController.sumAllCosts);
 
 module.exports = router;
