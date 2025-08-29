@@ -26,7 +26,6 @@ exports.getExpenses = async (req, res) => {
     try {
         const expenses = await Expenses.find().sort({ date: -1 });
         res.json(expenses);
-        console.log(req.Expenses);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

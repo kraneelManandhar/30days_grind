@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
+const {Sdata} = require('./dummy')
 
 const Schema = mongoose.Schema({
-    name : {type : String,required : true},
-    password : {type : String ,required : true}
+    name : Sdata,
+    email : Sdata,
+    password : Sdata
 });
 
 module.exports = (connection) => connection.model('User', Schema);
